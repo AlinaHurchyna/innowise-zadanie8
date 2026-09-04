@@ -13,8 +13,10 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
 
     @Query("SELECT a FROM Advertisement a WHERE "
             + "(:keyword IS NULL OR LOWER(a.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND "
-            + "(:categoryId IS NULL OR a.category.id = :categoryId)")
-    List<Advertisement> search(@Param("keyword") String keyword, @Param("categoryId") Long categoryId, Sort sort);
+            + "(:categoryId IS NULL OR a.category.id = :categoryId) AND "
+            + "(:city IS NULL OR a.city = :city)")
+    List<Advertisement> search(@Param("keyword") String keyword, @Param("categoryId") Long categoryId,
+                                @Param("city") String city, Sort sort);
 
     List<Advertisement> findBySellerOrderByCreatedAtDesc(User seller);
 }

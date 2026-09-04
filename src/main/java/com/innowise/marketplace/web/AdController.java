@@ -48,6 +48,7 @@ public class AdController {
     public String newAdForm(Model model) {
         model.addAttribute("ad", new Advertisement());
         model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("cities", Cities.ALL);
         return "adForm";
     }
 
@@ -60,6 +61,7 @@ public class AdController {
 
         if (errors.hasErrors()) {
             model.addAttribute("categories", categoryRepository.findAll());
+            model.addAttribute("cities", Cities.ALL);
             return "adForm";
         }
 
@@ -76,6 +78,7 @@ public class AdController {
         requireOwner(ad, user);
         model.addAttribute("ad", ad);
         model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("cities", Cities.ALL);
         return "adForm";
     }
 
@@ -91,12 +94,14 @@ public class AdController {
 
         if (errors.hasErrors()) {
             model.addAttribute("categories", categoryRepository.findAll());
+            model.addAttribute("cities", Cities.ALL);
             return "adForm";
         }
 
         ad.setTitle(form.getTitle());
         ad.setDescription(form.getDescription());
         ad.setPrice(form.getPrice());
+        ad.setCity(form.getCity());
         ad.setCategory(categoryRepository.findById(categoryId).orElse(null));
         savePhotos(ad, photos);
         advertisementRepository.save(ad);

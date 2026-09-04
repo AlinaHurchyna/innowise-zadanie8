@@ -22,21 +22,26 @@ public class HomeController {
     @GetMapping("/")
     public String home(@RequestParam(required = false) String keyword,
                         @RequestParam(required = false) Long categoryId,
+                        @RequestParam(required = false) String city,
                         @RequestParam(defaultValue = "newest") String sort,
                         Model model) {
 
         Sort sortOrder = switch (sort) {
             case "priceAsc" -> Sort.by("price").ascending();
             case "priceDesc" -> Sort.by("price").descending();
+            case "city" -> Sort.by("city").ascending();
             default -> Sort.by("createdAt").descending();
         };
 
         String keywordParam = (keyword == null || keyword.isBlank()) ? null : keyword;
+        String cityParam = (city == null || city.isBlank()) ? null : city;
 
-        model.addAttribute("ads", advertisementRepository.search(keywordParam, categoryId, sortOrder));
+        model.addAttribute("ads", advertisementRepository.search(keywordParam, categoryId, cityParam, sortOrder));
         model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("cities", Cities.ALL);
         model.addAttribute("keyword", keyword);
         model.addAttribute("categoryId", categoryId);
+        model.addAttribute("city", city);
         model.addAttribute("sort", sort);
         return "home";
     }

@@ -31,10 +31,15 @@
         <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
                 th:selected="${categoryId != null and categoryId == c.id}"></option>
     </select>
+    <select name="city">
+        <option value="">Все города</option>
+        <option th:each="c : ${cities}" th:value="${c}" th:text="${c}" th:selected="${city == c}"></option>
+    </select>
     <select name="sort">
         <option value="newest" th:selected="${sort == 'newest'}">Сначала новые</option>
         <option value="priceAsc" th:selected="${sort == 'priceAsc'}">Цена: по возрастанию</option>
         <option value="priceDesc" th:selected="${sort == 'priceDesc'}">Цена: по убыванию</option>
+        <option value="city" th:selected="${sort == 'city'}">По городу</option>
     </select>
     <button type="submit">Найти</button>
 </form>
@@ -47,7 +52,7 @@
         <strong th:text="${ad.title}"></strong>
     </a>
     <div class="price" th:text="${ad.price} + ' руб.'"></div>
-    <div th:text="${ad.category != null ? ad.category.name : ''}"></div>
+    <div th:text="${ad.category != null ? ad.category.name : ''} + ', ' + ${ad.city}"></div>
     <div>Продавец: <a th:href="@{/users/{u}(u=${ad.seller.username})}" th:text="${ad.seller.username}"></a></div>
 </div>
 

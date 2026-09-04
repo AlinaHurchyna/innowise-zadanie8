@@ -12,7 +12,7 @@
 
 <h1 th:text="${ad.title}"></h1>
 <div class="price" th:text="${ad.price} + ' руб.'"></div>
-<div th:text="${ad.category != null ? ad.category.name : ''}"></div>
+<div th:text="${ad.category != null ? ad.category.name : ''} + ', ' + ${ad.city}"></div>
 <p th:text="${ad.description}"></p>
 
 <div>

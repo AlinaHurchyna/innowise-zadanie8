@@ -28,6 +28,9 @@ public class Advertisement {
     @Positive
     private BigDecimal price;
 
+    @NotBlank
+    private String city;
+
     @ManyToOne
     private Category category;
 
@@ -65,6 +68,14 @@ public class Advertisement {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public Category getCategory() {

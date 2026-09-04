@@ -32,6 +32,13 @@
                 th:selected="${ad.category != null and ad.category.id == c.id}"></option>
     </select>
 
+    <label>Город</label>
+    <select th:field="*{city}">
+        <option value="">Выберите город</option>
+        <option th:each="c : ${cities}" th:value="${c}" th:text="${c}"></option>
+    </select>
+    <div class="error" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></div>
+
     <label>Фотографии</label>
     <input type="file" name="photos" multiple accept="image/*">
 
