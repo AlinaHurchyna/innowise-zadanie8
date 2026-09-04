@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Доска объявлений</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav>
+    <div><a th:href="@{/}">Главная</a></div>
+    <div>
+        <span sec:authorize="isAuthenticated()">
+            Привет, <span sec:authentication="name"></span>! |
+            <a th:href="@{/ads/new}">Разместить объявление</a> |
+            <form th:action="@{/logout}" method="post" style="display:inline">
+                <button type="submit">Выйти</button>
+            </form>
+        </span>
+        <span sec:authorize="!isAuthenticated()">
+            <a th:href="@{/login}">Войти</a> | <a th:href="@{/register}">Регистрация</a>
+        </span>
+    </div>
+</nav>
+
+<h1>Объявления</h1>
+
+<form class="filters" th:action="@{/}" method="get">
+    <input type="text" name="keyword" placeholder="Поиск по названию" th:value="${keyword}">
+    <select name="categoryId">
+        <option value="">Все категории</option>
+        <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
+                th:selected="${categoryId != null and categoryId == c.id}"></option>
+    </select>
+    <select name="sort">
+        <option value="newest" th:selected="${sort == 'newest'}">Сначала новые</option>
+        <option value="priceAsc" th:selected="${sort == 'priceAsc'}">Цена: по возрастанию</option>
+        <option value="priceDesc" th:selected="${sort == 'priceDesc'}">Цена: по убыванию</option>
+    </select>
+    <button type="submit">Найти</button>
+</form>
+
+<div th:if="${#lists.isEmpty(ads)}">Объявлений не найдено.</div>
+
+<div class="ad-card" th:each="ad : ${ads}">
+    <a th:href="@{/ads/{id}(id=${ad.id})}">
+        <img th:if="${not #lists.isEmpty(ad.photos)}" th:src="@{/uploads/{f}(f=${ad.photos[0].filename})}">
+        <strong th:text="${ad.title}"></strong>
+    </a>
+    <div class="price" th:text="${ad.price} + ' руб.'"></div>
+    <div th:text="${ad.category != null ? ad.category.name : ''}"></div>
+    <div>Продавец: <a th:href="@{/users/{u}(u=${ad.seller.username})}" th:text="${ad.seller.username}"></a></div>
+</div>
+
+</body>
+</html>

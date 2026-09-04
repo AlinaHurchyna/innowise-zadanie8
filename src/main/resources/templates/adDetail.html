@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${ad.title}">Объявление</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav>
+    <div><a th:href="@{/}">← Ко всем объявлениям</a></div>
+</nav>
+
+<h1 th:text="${ad.title}"></h1>
+<div class="price" th:text="${ad.price} + ' руб.'"></div>
+<div th:text="${ad.category != null ? ad.category.name : ''}"></div>
+<p th:text="${ad.description}"></p>
+
+<div>
+    <img class="photo-thumb" th:each="photo : ${ad.photos}" th:src="@{/uploads/{f}(f=${photo.filename})}">
+</div>
+
+<p>Продавец: <a th:href="@{/users/{u}(u=${ad.seller.username})}" th:text="${ad.seller.username}"></a>,
+   тел. <span th:text="${ad.seller.phone}"></span></p>
+
+<div sec:authorize="isAuthenticated()" th:if="${#authentication.principal.id == ad.seller.id}">
+    <a th:href="@{/ads/{id}/edit(id=${ad.id})}">Редактировать</a>
+    <form th:action="@{/ads/{id}/delete(id=${ad.id})}" method="post" style="display:inline">
+        <button type="submit" onclick="return confirm('Удалить объявление?')">Удалить</button>
+    </form>
+</div>
+
+</body>
+</html>

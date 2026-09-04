@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Разместить объявление</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav>
+    <div><a th:href="@{/}">← Ко всем объявлениям</a></div>
+</nav>
+
+<h1 th:text="${ad.id == null ? 'Новое объявление' : 'Редактирование объявления'}"></h1>
+
+<form th:action="${ad.id == null} ? @{/ads} : @{/ads/{id}/edit(id=${ad.id})}" method="post" enctype="multipart/form-data" th:object="${ad}">
+
+    <label>Название</label>
+    <input type="text" th:field="*{title}">
+    <div class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+
+    <label>Описание</label>
+    <textarea th:field="*{description}" rows="4"></textarea>
+    <div class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+
+    <label>Цена, руб.</label>
+    <input type="number" step="0.01" th:field="*{price}">
+    <div class="error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+
+    <label>Категория</label>
+    <select name="categoryId">
+        <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
+                th:selected="${ad.category != null and ad.category.id == c.id}"></option>
+    </select>
+
+    <label>Фотографии</label>
+    <input type="file" name="photos" multiple accept="image/*">
+
+    <div th:if="${ad.id != null and not #lists.isEmpty(ad.photos)}">
+        <p>Текущие фото:</p>
+        <img class="photo-thumb" th:each="photo : ${ad.photos}" th:src="@{/uploads/{f}(f=${photo.filename})}">
+    </div>
+
+    <button type="submit">Сохранить</button>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${seller.username}">Профиль</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav>
+    <div><a th:href="@{/}">← Ко всем объявлениям</a></div>
+</nav>
+
+<h1 th:text="'Продавец: ' + ${seller.username}"></h1>
+<p th:text="'Телефон: ' + ${seller.phone}"></p>
+
+<h2>Объявления продавца</h2>
+<div th:if="${#lists.isEmpty(ads)}">У этого продавца пока нет объявлений.</div>
+<div class="ad-card" th:each="ad : ${ads}">
+    <a th:href="@{/ads/{id}(id=${ad.id})}">
+        <img th:if="${not #lists.isEmpty(ad.photos)}" th:src="@{/uploads/{f}(f=${ad.photos[0].filename})}">
+        <strong th:text="${ad.title}"></strong>
+    </a>
+    <div class="price" th:text="${ad.price} + ' руб.'"></div>
+</div>
+
+</body>
+</html>
