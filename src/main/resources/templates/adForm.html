@@ -45,7 +45,7 @@
     <div th:if="${ad.id != null and not #lists.isEmpty(ad.photos)}">
         <p>Текущие фото:</p>
         <span th:each="photo : ${ad.photos}" style="display:inline-block; text-align:center; margin-right:8px;">
-            <img class="photo-thumb" th:src="@{/uploads/{f}(f=${photo.filename})}"><br>
+            <img class="photo-thumb" th:src="@{/photos/{id}(id=${photo.id})}"><br>
             <label>
                 <input type="checkbox" name="deletePhotoIds" th:value="${photo.id}"> Удалить
             </label>

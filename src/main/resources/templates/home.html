@@ -48,7 +48,7 @@
 
 <div class="ad-card" th:each="ad : ${ads}">
     <a th:href="@{/ads/{id}(id=${ad.id})}">
-        <img th:if="${not #lists.isEmpty(ad.photos)}" th:src="@{/uploads/{f}(f=${ad.photos[0].filename})}">
+        <img th:if="${not #lists.isEmpty(ad.photos)}" th:src="@{/photos/{id}(id=${ad.photos[0].id})}">
         <strong th:text="${ad.title}"></strong>
     </a>
     <div class="price" th:text="${ad.price} + ' руб.'"></div>

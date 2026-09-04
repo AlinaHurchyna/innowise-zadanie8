@@ -6,7 +6,6 @@ import com.innowise.marketplace.model.AdPhoto;
 import com.innowise.marketplace.model.Advertisement;
 import com.innowise.marketplace.model.User;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -17,11 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/ads")
@@ -29,9 +24,6 @@ public class AdController {
 
     private final AdvertisementRepository advertisementRepository;
     private final CategoryRepository categoryRepository;
-
-    @Value("${app.upload.dir}")
-    private String uploadDir;
 
     public AdController(AdvertisementRepository advertisementRepository, CategoryRepository categoryRepository) {
         this.advertisementRepository = advertisementRepository;
@@ -122,32 +114,18 @@ public class AdController {
         if (deletePhotoIds == null || deletePhotoIds.isEmpty()) {
             return;
         }
-        ad.getPhotos().removeIf(photo -> {
-            if (!deletePhotoIds.contains(photo.getId())) {
-                return false;
-            }
-            try {
-                Files.deleteIfExists(Paths.get(uploadDir).resolve(photo.getFilename()));
-            } catch (IOException e) {
-                // файл уже мог быть удалён — не критично
-            }
-            return true;
-        });
+        ad.getPhotos().removeIf(photo -> deletePhotoIds.contains(photo.getId()));
     }
 
     private void savePhotos(Advertisement ad, MultipartFile[] photos) throws IOException {
         if (photos == null) {
             return;
         }
-        Path dir = Paths.get(uploadDir);
-        Files.createDirectories(dir);
         for (MultipartFile photo : photos) {
             if (photo.isEmpty()) {
                 continue;
             }
-            String filename = UUID.randomUUID() + "-" + photo.getOriginalFilename();
-            Files.copy(photo.getInputStream(), dir.resolve(filename));
-            ad.getPhotos().add(new AdPhoto(filename, ad));
+            ad.getPhotos().add(new AdPhoto(photo.getBytes(), photo.getContentType(), ad));
         }
     }
 

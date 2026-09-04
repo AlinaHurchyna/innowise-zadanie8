@@ -16,7 +16,7 @@
 <p th:text="${ad.description}"></p>
 
 <div>
-    <img class="photo-thumb" th:each="photo : ${ad.photos}" th:src="@{/uploads/{f}(f=${photo.filename})}">
+    <img class="photo-thumb" th:each="photo : ${ad.photos}" th:src="@{/photos/{id}(id=${photo.id})}">
 </div>
 
 <p>Продавец: <a th:href="@{/users/{u}(u=${ad.seller.username})}" th:text="${ad.seller.username}"></a>,

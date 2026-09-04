@@ -9,7 +9,11 @@ public class AdPhoto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String filename;
+    private String contentType;
+
+    @Lob
+    @Column(length = 10_000_000)
+    private byte[] data;
 
     @ManyToOne
     private Advertisement advertisement;
@@ -17,8 +21,9 @@ public class AdPhoto {
     public AdPhoto() {
     }
 
-    public AdPhoto(String filename, Advertisement advertisement) {
-        this.filename = filename;
+    public AdPhoto(byte[] data, String contentType, Advertisement advertisement) {
+        this.data = data;
+        this.contentType = contentType;
         this.advertisement = advertisement;
     }
 
@@ -26,8 +31,12 @@ public class AdPhoto {
         return id;
     }
 
-    public String getFilename() {
-        return filename;
+    public String getContentType() {
+        return contentType;
+    }
+
+    public byte[] getData() {
+        return data;
     }
 
     public Advertisement getAdvertisement() {
