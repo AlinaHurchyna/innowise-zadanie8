@@ -86,6 +86,7 @@ public class AdController {
     public String update(@PathVariable Long id, @ModelAttribute("ad") @Valid Advertisement form, Errors errors,
                           @RequestParam(required = false) Long categoryId,
                           @RequestParam(required = false) MultipartFile[] photos,
+                          @RequestParam(required = false) List<Long> deletePhotoIds,
                           @AuthenticationPrincipal User user,
                           Model model) throws IOException {
 
@@ -103,6 +104,7 @@ public class AdController {
         ad.setPrice(form.getPrice());
         ad.setCity(form.getCity());
         ad.setCategory(categoryRepository.findById(categoryId).orElse(null));
+        deletePhotos(ad, deletePhotoIds);
         savePhotos(ad, photos);
         advertisementRepository.save(ad);
         return "redirect:/ads/" + ad.getId();
@@ -114,6 +116,23 @@ public class AdController {
         requireOwner(ad, user);
         advertisementRepository.delete(ad);
         return "redirect:/";
+    }
+
+    private void deletePhotos(Advertisement ad, List<Long> deletePhotoIds) {
+        if (deletePhotoIds == null || deletePhotoIds.isEmpty()) {
+            return;
+        }
+        ad.getPhotos().removeIf(photo -> {
+            if (!deletePhotoIds.contains(photo.getId())) {
+                return false;
+            }
+            try {
+                Files.deleteIfExists(Paths.get(uploadDir).resolve(photo.getFilename()));
+            } catch (IOException e) {
+                // файл уже мог быть удалён — не критично
+            }
+            return true;
+        });
     }
 
     private void savePhotos(Advertisement ad, MultipartFile[] photos) throws IOException {
